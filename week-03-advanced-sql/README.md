@@ -150,3 +150,247 @@
 
 
 
+
+
+---
+
+
+
+\## 💻 Code Examples
+
+
+
+\### 1️⃣ Joins
+
+
+
+```sql
+
+-- INNER JOIN: Only matching rows
+
+SELECT e.emp\_id, e.name, d.department\_name
+
+FROM employees e
+
+INNER JOIN departments d ON e.department\_id = d.department\_id;
+
+
+
+-- LEFT JOIN: All from employees, matched from departments
+
+SELECT e.emp\_id, e.name, d.department\_name
+
+FROM employees e
+
+LEFT JOIN departments d ON e.department\_id = d.department\_id;
+
+
+
+-- RIGHT JOIN: All from departments, matched from employees
+
+SELECT e.emp\_id, e.name, d.department\_name
+
+FROM employees e
+
+RIGHT JOIN departments d ON e.department\_id = d.department\_id;
+
+
+
+-- FULL OUTER JOIN: All rows from both tables
+
+SELECT e.emp\_id, e.name, d.department\_name
+
+FROM employees e
+
+FULL OUTER JOIN departments d ON e.department\_id = d.department\_id;
+
+
+
+-- SELF JOIN: Compare employees in the same department
+
+SELECT a.name AS emp1, b.name AS emp2, a.department\_id
+
+FROM employees a
+
+JOIN employees b ON a.department\_id = b.department\_id
+
+WHERE a.emp\_id <> b.emp\_id;
+
+```
+
+
+
+---
+
+
+
+\### 2️⃣ UNION vs UNION ALL
+
+```sql
+
+-- UNION removes duplicates
+
+SELECT department FROM employees
+
+UNION
+
+SELECT department FROM contractors;
+
+
+
+-- UNION ALL keeps duplicates
+
+SELECT department FROM employees
+
+UNION ALL
+
+SELECT department FROM contractors;
+
+```
+
+
+
+---
+
+
+
+\### 3️⃣ Subqueries
+
+```sql
+
+-- Scalar Subquery
+
+SELECT name, salary
+
+FROM employees
+
+WHERE salary > (SELECT AVG(salary) FROM employees);
+
+
+
+-- IN with Subquery
+
+SELECT name
+
+FROM employees
+
+WHERE department\_id IN (SELECT department\_id FROM departments WHERE location = 'New York');
+
+
+
+-- Correlated Subquery
+
+SELECT e1.name, e1.salary
+
+FROM employees e1
+
+WHERE e1.salary > (SELECT AVG(e2.salary) 
+
+&nbsp;                  FROM employees e2 
+
+&nbsp;                  WHERE e1.department\_id = e2.department\_id);
+
+```
+
+
+
+---
+
+
+
+\### 4️⃣ Window Functions
+
+```sql
+
+-- Row numbering
+
+SELECT name, ROW\_NUMBER() OVER (ORDER BY salary DESC) AS row\_num
+
+FROM employees;
+
+
+
+-- Ranking
+
+SELECT name, RANK() OVER (ORDER BY salary DESC) AS rank\_num
+
+FROM employees;
+
+
+
+-- Dense Rank (no gaps)
+
+SELECT name, DENSE\_RANK() OVER (ORDER BY salary DESC) AS dense\_rank\_num
+
+FROM employees;
+
+
+
+-- NTILE: Divide employees into 4 groups by salary
+
+SELECT name, NTILE(4) OVER (ORDER BY salary DESC) AS quartile
+
+FROM employees;
+
+
+
+-- Lead \& Lag
+
+SELECT name, salary,
+
+&nbsp;      LAG(salary, 1) OVER (ORDER BY salary) AS prev\_salary,
+
+&nbsp;      LEAD(salary, 1) OVER (ORDER BY salary) AS next\_salary
+
+FROM employees;
+
+```
+
+
+
+---
+
+
+
+\### 5️⃣ String Functions
+
+```sql
+
+SELECT UPPER(name) AS uppercase\_name,
+
+&nbsp;      LOWER(name) AS lowercase\_name,
+
+&nbsp;      SUBSTR(name, 1, 3) AS first\_three\_chars,
+
+&nbsp;      TRIM('  John  ') AS trimmed\_name,
+
+&nbsp;      CONCAT(name, ' works in ', department) AS full\_sentence
+
+FROM employees;
+
+```
+
+
+
+---
+
+
+
+\### 6️⃣ Date Functions
+
+```sql
+
+SELECT SYSDATE AS today,
+
+&nbsp;      EXTRACT(YEAR FROM hire\_date) AS hire\_year,
+
+&nbsp;      ADD\_MONTHS(hire\_date, 6) AS six\_months\_later,
+
+&nbsp;      MONTHS\_BETWEEN(SYSDATE, hire\_date) AS months\_worked
+
+FROM employees;
+
+```
+
+
+
